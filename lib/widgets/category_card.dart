@@ -3,31 +3,29 @@ import '../models/category_model.dart';
 
 class CategoryCard extends StatelessWidget {
   final Category category;
+  final VoidCallback onTap;
 
-  const CategoryCard({super.key, required this.category});
+  const CategoryCard({
+    super.key,
+    required this.category,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          "/meals",
-          arguments: category,
-        );
-      },
-      child: SizedBox(
-        height: 120,
+    return SizedBox(
+      height: 120,
+      child: GestureDetector(
+        onTap: onTap,
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: Colors.red.shade300, width: 2),
+            side: BorderSide(color: Colors.orange.shade300, width: 2),
           ),
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Row(
               children: [
-
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
@@ -40,7 +38,6 @@ class CategoryCard extends StatelessWidget {
 
                 const SizedBox(width: 16),
 
-
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,9 +46,8 @@ class CategoryCard extends StatelessWidget {
                       Text(
                         category.name,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Colors.orange
                         ),
                       ),
 
@@ -62,10 +58,9 @@ class CategoryCard extends StatelessWidget {
                           category.description,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.brown,
+                            color: Colors.brown.shade700,
                           ),
                         ),
                       ),

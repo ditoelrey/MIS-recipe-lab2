@@ -23,13 +23,28 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    meal = ModalRoute.of(context)!.settings.arguments as Meal;
+    final args = ModalRoute.of(context)!.settings.arguments;
 
-    _loadRecipeDetails();
+    if (args is Meal){
+      meal = args;
+      _loadRecipeDetails(meal.mealId);
+    }
+    else if (args == "random"){
+      _loadRandomMeal();
+    }
   }
 
-  void _loadRecipeDetails() async {
-    final details = await _api.loadMealDetails(meal.mealId);
+  void _loadRecipeDetails(String id) async {
+    final details = await _api.loadMealDetails(id);
+
+    setState(() {
+      recipe = details;
+      _isLoading = false;
+    });
+  }
+
+  void _loadRandomMeal() async {
+    final details = await _api.loadRandomMeal();
 
     setState(() {
       recipe = details;

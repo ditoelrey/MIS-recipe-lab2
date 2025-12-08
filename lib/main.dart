@@ -1,11 +1,37 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:meal_app_lab2/screens/details.dart';
-import 'package:meal_app_lab2/screens/meals.dart';
-import 'screens/home.dart';
-import 'screens/meals.dart';
-import 'screens/details.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:timezone/data/latest.dart' as tz show initializeTimeZones;
 
-void main() {
+import 'firebase_options.dart';
+import 'services/notification_service.dart';
+
+import 'package:permission_handler/permission_handler.dart';
+
+import 'screens/home.dart';
+import 'screens/details.dart';
+import 'screens/favorites.dart';
+import 'screens/meals.dart';
+
+final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  tz.initializeTimeZones();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await NotificationService.initialize();
+
+  if (Platform.isAndroid) {
+    await Permission.notification.request();
+  }
+
+  await NotificationService.showDailyNotificationNow();
+
   runApp(const MyApp());
 }
 
@@ -15,18 +41,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Meal App',
+      navigatorKey: navKey,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
-        useMaterial3: true,
-      ),
-
+      title: 'Meal App',
       initialRoute: "/",
       routes: {
-        "/": (context) => const MyHomePage(title: "Meal Categories"),
-        "/meals": (context) => const MealsByCategoryScreen(),
+        "/": (context) => const MyHomePage(title: "Meal App"),
         "/details": (context) => const RecipeDetailsScreen(),
+        "/favorites": (context) => const FavoriteMealsScreen(),
+        "/meals": (context) => const MealsByCategoryScreen(),
       },
     );
   }

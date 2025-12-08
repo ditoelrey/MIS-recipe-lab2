@@ -3,6 +3,7 @@ import '../models/category_model.dart';
 import '../models/meal_model.dart';
 import '../services/api_service.dart';
 import '../widgets/meal_grid.dart';
+import '../services/notification_service.dart';
 
 class MealsByCategoryScreen extends StatefulWidget {
   const MealsByCategoryScreen({super.key});
@@ -13,12 +14,13 @@ class MealsByCategoryScreen extends StatefulWidget {
 
 class _MealsByCategoryScreenState extends State<MealsByCategoryScreen> {
   late Category category;
+  late List<Meal> favorites;
+  late Function(Meal) updateFavorites;
 
   List<Meal> _meals = [];
   List<Meal> _filteredMeals = [];
 
   bool _isLoading = true;
-  String _searchQuery = "";
 
   final ApiService _api = ApiService();
   final TextEditingController _searchController = TextEditingController();
@@ -27,7 +29,13 @@ class _MealsByCategoryScreenState extends State<MealsByCategoryScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    category = ModalRoute.of(context)!.settings.arguments as Category;
+    final args =
+    ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    category = args["category"] as Category;
+    favorites = args["favorites"] as List<Meal>;
+    updateFavorites = args["updateFavorites"] as Function(Meal);
+
     _loadMeals();
   }
 
@@ -43,8 +51,6 @@ class _MealsByCategoryScreenState extends State<MealsByCategoryScreen> {
 
   void _filterMeals(String query) {
     setState(() {
-      _searchQuery = query;
-
       if (query.isEmpty) {
         _filteredMeals = _meals;
       } else {
@@ -56,10 +62,17 @@ class _MealsByCategoryScreenState extends State<MealsByCategoryScreen> {
     });
   }
 
+  void toggleFavorite(Meal meal) {
+    setState(() {
+      updateFavorites(meal);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
+
       appBar: AppBar(
         title: Text(
           category.name,
@@ -78,16 +91,14 @@ class _MealsByCategoryScreenState extends State<MealsByCategoryScreen> {
           : Column(
         children: [
           Padding(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
                 hintText: "Search meals...",
-                prefixIcon: Icon(Icons.search,
-                    color: Colors.orange.shade300),
+                prefixIcon: Icon(Icons.search, color: Colors.orange.shade300),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: BorderSide(
@@ -99,9 +110,25 @@ class _MealsByCategoryScreenState extends State<MealsByCategoryScreen> {
           ),
 
           Expanded(
-            child: MealGrid(meals: _filteredMeals),
-          )
+            child: MealGrid(
+              meals: _filteredMeals,
+              favorites: favorites,
+              onFavoriteToggle: toggleFavorite,
+            ),
+          ),
         ],
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            "/favorites",
+            arguments: favorites,
+          );
+        },
+        backgroundColor: Colors.orange.shade400,
+        child: const Icon(Icons.favorite, color: Colors.white),
       ),
     );
   }

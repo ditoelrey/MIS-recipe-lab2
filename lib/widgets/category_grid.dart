@@ -4,8 +4,13 @@ import 'category_card.dart';
 
 class CategoryGrid extends StatelessWidget {
   final List<Category> categories;
+  final Function(Category) onCategoryTap;
 
-  const CategoryGrid({super.key, required this.categories});
+  const CategoryGrid({
+    super.key,
+    required this.categories,
+    required this.onCategoryTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +22,11 @@ class CategoryGrid extends StatelessWidget {
         childAspectRatio: 3,
       ),
       itemCount: categories.length,
-      physics: const BouncingScrollPhysics(),
       itemBuilder: (context, index) {
-        return CategoryCard(category: categories[index]);
+        return CategoryCard(
+          category: categories[index],
+          onTap: () => onCategoryTap(categories[index]),
+        );
       },
     );
   }

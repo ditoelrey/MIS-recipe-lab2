@@ -4,8 +4,15 @@ import 'meal_card.dart';
 
 class MealGrid extends StatefulWidget {
   final List<Meal> meals;
+  final List<Meal> favorites;
+  final Function(Meal) onFavoriteToggle;
 
-  const MealGrid({super.key, required this.meals});
+  const MealGrid({
+    super.key,
+    required this.meals,
+    required this.favorites,
+    required this.onFavoriteToggle,
+  });
 
   @override
   State<MealGrid> createState() => _MealGridState();
@@ -25,7 +32,14 @@ class _MealGridState extends State<MealGrid> {
       ),
       itemCount: widget.meals.length,
       itemBuilder: (context, index) {
-        return MealCard(meal: widget.meals[index]);
+        final meal = widget.meals[index];
+        final isFavorite = widget.favorites.contains(meal);
+
+        return MealCard(
+          meal: meal,
+          isFavorite: isFavorite,
+          onFavoriteToggle: () => widget.onFavoriteToggle(meal),
+        );
       },
     );
   }
