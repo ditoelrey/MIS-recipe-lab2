@@ -62,8 +62,6 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
         child: Column(
           children: [
             const SizedBox(height: 50),
-
-
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(

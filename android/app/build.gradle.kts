@@ -1,8 +1,6 @@
 plugins {
     id("com.android.application")
-    // START: FlutterFire Configuration
-    id("com.google.gms.google-services")
-    // END: FlutterFire Configuration
+    id("com.google.gms.google-services")   // Firebase
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -15,7 +13,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-
         isCoreLibraryDesugaringEnabled = true
     }
 
@@ -45,6 +42,11 @@ flutter {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7")
 
-    // REQUIRED FOR flutter_local_notifications
+    // Firebase Messaging native library
+    implementation("com.google.firebase:firebase-messaging-ktx:24.0.0")
+
+    // REQUIRED for flutter_local_notifications
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 }
+
+apply(plugin = "com.google.gms.google-services")

@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import '../models/category_model.dart';
 import '../models/meal_model.dart';
@@ -24,7 +25,28 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
+
+    FirebaseMessaging.instance.getToken().then((token) {
+      print("🔑 FCM TOKEN: $token");
+    });
+
+
+    FirebaseMessaging.onMessage.listen((message) {
+      print("📩 FOREGROUND PUSH:");
+      print("Title: ${message.notification?.title}");
+      print("Body: ${message.notification?.body}");
+    });
+
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("📲 USER TAPPED NOTIFICATION!");
+      Navigator.pushNamed(context, "/details", arguments: "random");
+    });
+
     _loadCategories();
+
+
   }
 
   void _loadCategories() async {
