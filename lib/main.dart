@@ -19,7 +19,7 @@ final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print("🔥 BACKGROUND FCM MESSAGE: ${message.notification?.title}");
+  print(" BACKGROUND FCM MESSAGE: ${message.notification?.title}");
 }
 
 
@@ -35,7 +35,7 @@ Future<void> setupFCM() async {
 
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print("📩 FOREGROUND FCM: ${message.notification?.title}");
+    print(" FOREGROUND FCM: ${message.notification?.title}");
 
 
     NotificationService.notificationsPlugin.show(
@@ -55,12 +55,12 @@ Future<void> setupFCM() async {
 
 
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print("📬 FCM CLICKED: ${message.notification?.title}");
+    print(" FCM CLICKED: ${message.notification?.title}");
   });
 
 
   String? token = await messaging.getToken();
-  print("🔑 FCM TOKEN: $token");
+  print(" FCM TOKEN: $token");
 }
 
 
